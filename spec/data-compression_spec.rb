@@ -146,3 +146,26 @@ RSpec.describe TextCompressor do
   end
 
 end
+
+
+RSpec.describe CompressionTest do
+
+  describe "#initialize" do
+    it "takes original, compressed, and decompressed files" do
+
+    end
+  end
+
+  describe "#compare_orig_to_decompressed" do
+    it "compares strings from original and decompressed files" do
+
+    end
+  end
+
+  describe "#compare_orig_to_compressed" do
+    it "compares file stats from original and decompressed files" do
+      
+    end
+  end
+
+end
