@@ -2,11 +2,8 @@
 require 'pry'
 require_relative 'huffman'
 
-
 class TextCompressor
-
-  OUT_FILE = 'output.txt'
-
+  OUT_FILE = 'compressed.txt'
   attr_reader :file_string
 
   def initialize(filename)
@@ -21,8 +18,6 @@ class TextCompressor
     sorted_freq = final_freq.sort_by { |k, v| -v }
     Hash[sorted_freq]
   end
-    # priority_q = sorted_freq.map { |item| item.first }
-    # return array of arrays
 
   def create_nodes(char_frequency)
     node_array = []
@@ -34,9 +29,6 @@ class TextCompressor
     node_array
   end
 
-# values = [*(0..pq_l)].map { |n| "%.7b" % n }
-# =begin
-# pq_values = Hash[priority_q.zip(values)]
   def encode(code_table)
     coded_char_array = []
     file_string.each_char { |c| coded_char_array << code_table[c] }
@@ -51,7 +43,6 @@ end
 
 
 class TextDecompressor
-
   attr_reader :input_string
 
   def initialize(filename)
@@ -73,42 +64,42 @@ class TextDecompressor
 
     until raw_decomp.length < min_length
       test_block = raw_decomp[0..cur_length]
-      # puts raw_decomp.empty?
-      # binding.pry
-      # puts "Now testing block #{test_block} of length #{cur_length + 1}"
+
       if lookup_table.has_key?(test_block)
-        puts lookup_table[test_block]
-        decoded_char_array << lookup_table[test_block] # lookup char
-        raw_decomp.slice!(0..cur_length) # remove matching block from front of string
-        cur_length = min_length - 1 # reset cur_length
+        decoded_char_array << lookup_table[test_block]
+        raw_decomp.slice!(0..cur_length)
+        cur_length = min_length - 1
       else
-        cur_length += 1 # extend current length
-        # test_block = raw_decomp[0..cur_length]
+        cur_length += 1
       end
     end
 
     decoded_char_array.join
+  end
 
+  def write_file(decompressed_string)
+    File.write('decompressed.txt', decompressed_string)
   end
 end
 
-=begin
-File.stat('output.txt')
-raw_comp = File.read('output.txt')
+class CompressionTest
+  attr_reader :original, :compressed, :decompressed
 
-raw_decomp = raw_comp.unpack('B*')
+  def initialize(original, compressed, decompressed)
+    @original = original
+    @compressed = compressed
+    @decompressed = decompressed
+  end
 
-# abstract the number of bits required, based on the number of unique characters that need to be stored
-bit_array = raw_decomp[0].scan /.{7}/m
+  def compare_orig_to_comp
+    orig_stat = File.stat(original)
+    comp_stat = File.stat(compressed)
+    binding.pry
+  end
 
-lookup_hash = pq_values.invert
-
-recomp_chars = bit_array.map { |char| lookup_hash[char] }
-
-final = recomp_chars.join
-
-# may need to strip final character
-=enkd
+  def compare_orig_to_decomp
+    orig_file = File.read(original)
+    decomp_file = File.read(decompressed)
+    binding.pry
+  end
 end
-# binding.pry
-=end
