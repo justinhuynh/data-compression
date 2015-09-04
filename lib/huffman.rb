@@ -12,8 +12,26 @@ class Node
   end
 end
 
-class Huffman
-  def self.build_tree(node_array)
+class BinaryTree
+  attr_reader :char_freq_hash
+
+  def initialize(char_freq_hash)
+    @char_freq_hash = char_freq_hash
+    converted_nodes = create_nodes(char_freq_hash)
+    node_tree = build_tree(converted_nodes)
+    return generate_keys(node_tree)
+  end
+
+  def create_nodes(char_frequency)
+    node_array = []
+    char_frequency.each do |char, freq|
+      new_node = Node.new(char, freq)
+      node_array << new_node
+    end
+    node_array
+  end
+
+  def build_tree(node_array)
     if node_array.length > 1
       node = node_array[0]
       next_node = node_array[1]
@@ -33,7 +51,7 @@ class Huffman
     end
   end
 
-  def self.traverse_binary_tree(node, results)
+  def traverse_binary_tree(node, results)
     if node.left == nil && node.right == nil
       results[node.char] = node.bits
     else
@@ -44,9 +62,9 @@ class Huffman
     end
   end
 
-  def self.create_keys(node)
+  def generate_keys(node)
     results_hash = {}
-    self.traverse_binary_tree(node, results_hash)
+    traverse_binary_tree(node, results_hash)
     results_hash
   end
 end

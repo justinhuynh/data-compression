@@ -1,5 +1,6 @@
 # require_relative 'data-compression'
 # require_relative 'huffman'
+require 'pry'
 #
 # FILENAME = 'the_last_question.txt'
 # COMPRESSED = 'compressed.txt'
@@ -24,6 +25,13 @@
 
 require 'pry'
 
-input = ARGV
+operation = ARGV[0]
+filename = ARGV[1]
+
+if operation == '-c'
+  TextCompressor.compress(filename)
+elsif operation == '-d'
+  TextCompressor.decompress(filename)
+
 
 binding.pry

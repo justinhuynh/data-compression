@@ -2,12 +2,28 @@
 require 'pry'
 require_relative 'huffman'
 
+# create these as class methods?
+
 class TextCompressor
-  OUT_FILE = 'compressed.txt'
   attr_reader :file_string
 
-  def initialize(filename)
-    @file_string = File.read(filename)
+  def compress(filename)
+    read_file(original_file)
+    char_frequency
+    build_code_table
+
+  end
+
+  def decompress(filename)
+
+  end
+
+  def read_file(filename)
+    file_string = File.read(filename)
+  end
+
+  def write_file(filename, compressed_string)
+    File.write(filename, compressed_string)
   end
 
   def char_frequency
@@ -19,14 +35,8 @@ class TextCompressor
     Hash[sorted_freq]
   end
 
-  def create_nodes(char_frequency)
-    node_array = []
-
-    char_frequency.each do |char, freq|
-      new_node = Node.new(char, freq)
-      node_array << new_node
-    end
-    node_array
+  def build_code_table(char_frequency)
+    code_table = Binary.new(char_frequency)
   end
 
   def encode(code_table)
@@ -34,19 +44,6 @@ class TextCompressor
     file_string.each_char { |c| coded_char_array << code_table[c] }
     encoded_string = coded_char_array.join
     compressed = [encoded_string].pack("B*")
-  end
-
-  def write_file(compressed_string)
-    File.write(OUT_FILE, compressed_string)
-  end
-end
-
-
-class TextDecompressor
-  attr_reader :input_string
-
-  def initialize(filename)
-    @input_string = File.read(filename)
   end
 
   def extract_code_table
@@ -75,10 +72,6 @@ class TextDecompressor
     end
 
     decoded_char_array.join
-  end
-
-  def write_file(decompressed_string)
-    File.write('decompressed.txt', decompressed_string)
   end
 end
 
